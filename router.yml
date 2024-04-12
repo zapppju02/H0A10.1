@@ -1,0 +1,44 @@
+---
+- hosts: gns3_router
+  connection: network_cli
+  become: true
+  gather_facts: no
+  tasks:
+
+  - name: Change hostname of R1
+    ios_config:
+      lines:
+        - hostname R1_Paz
+    become: yes
+    become_method: enable
+
+  - name: Activate service password-encryption on R1
+    ios_config:
+      lines:
+        - service password-encryption
+    become: yes
+    become_method: enable
+
+  - name: Configure login banner of R1
+    ios_banner:
+      banner: login
+      text: |
+        Access prohibited, authorized personnel only.
+    become: yes
+    become_method: enable
+
+  - name: Configure password and activate login of line console 0
+    ios_config:
+      lines:
+        - password cisco
+        - login
+      parents: line console 0
+    become: yes
+    become_method: enable
+
+  - name: Set enable secret password on R1
+    ios_config:
+      lines:
+        - enable secret class
+    become: yes
+    become_method: enable
